@@ -1,0 +1,9 @@
+gen 1 (kanto region): bulbasaur, charmander, squirtle, pikachu
+gen 2 (johto region): chikorita, cyndaquil, totodile
+gen 3 (hoenn region): treecko, torchic, mudkip
+gen 4 (sinnoh region): turtwig, chimchar, piplup
+gen 5 (unova region): snivy, tepig, oshawott
+gen 6 (kalos region): chespin, fennekin, froakie
+gen 7 (alola region): rowlet, litten, popplio
+gen 8 (galar region): grookey, scorbunny, sobble
+gen 9 (paldea region): sprigatito, fuecoco, quaxly
