@@ -87,6 +87,7 @@ public class PokemonController {
                 if (index == 3) {
                     index = 0;
                 }
+                toggleShiny.setSelected(false);
                 mapping();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
@@ -98,6 +99,7 @@ public class PokemonController {
                 if (index == -1) {
                     index = 2;
                 }
+                toggleShiny.setSelected(false);
                 mapping();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
@@ -111,6 +113,21 @@ public class PokemonController {
         nextPokemon.onMouseExitedProperty().set(e -> nextPokemon.setStyle(""));
         backButton.onMouseEnteredProperty().set(e -> backButton.setStyle("-fx-background-color: #faf6f6;"));
         backButton.onMouseExitedProperty().set(e -> backButton.setStyle(""));
+        toggleShiny.setOnAction(e -> {
+            if (toggleShiny.isSelected()) {
+                try {
+                    pokemonImage.setImage(new Image(getPokemonData(pokemonList.get(index)).getShinyImage().toString()));
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            } else {
+                try {
+                    pokemonImage.setImage(new Image(getPokemonData(pokemonList.get(index)).getImage().toString()));
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
         run();
     }
 
@@ -137,6 +154,7 @@ public class PokemonController {
         final JsonNode otherNode = spritesNode.get("other");
         final JsonNode officialArtworkNode = otherNode.get("official-artwork");
         final URL frontDefaultURL = new URL(officialArtworkNode.get("front_default").asText());
-        return new PokemonData(height, frontDefaultURL);
+        final URL frontShinyURL = new URL(officialArtworkNode.get("front_shiny").asText());
+        return new PokemonData(height, frontDefaultURL, frontShinyURL);
     }
 }
