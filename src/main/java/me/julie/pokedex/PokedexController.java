@@ -1,15 +1,12 @@
 package me.julie.pokedex;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
 public class PokedexController {
     @FXML
@@ -19,23 +16,30 @@ public class PokedexController {
     @FXML
     private Label pokedexLabel;
     @FXML
-    private Button kantoButton;
+    private GridPane gridPane;
+    @FXML
+    private ImageView bgImage;
 
     @FXML
     public void initialize() {
-        kantoButton.setFocusTraversable(false);
-        kantoButton.setOnAction(e -> Main.getInstance().loadGen1());
-    }
-
-    public static void main(String[] args) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        URL url = new URL("https://pokeapi.co/api/v2/pokemon/pikachu");
-        String jsonText;
-        try (InputStream in = url.openStream()) {
-            jsonText = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+        int gen = 1;
+        bgImage.fitWidthProperty().bind(mainVBox.widthProperty());
+        bgImage.fitHeightProperty().bind(mainVBox.heightProperty());
+        for (int i = 0; i < gridPane.getColumnCount(); i++) {
+            for (int j = 0; j < gridPane.getRowCount(); j++) {
+                VBox vBox = new VBox();
+                Button button = new Button("Gen" + gen);
+                button.setFocusTraversable(false);
+                int finalGen = gen;
+                button.setOnAction(e -> Main.getInstance().loadGen(finalGen));
+                button.setStyle("-fx-background-color: #c6caca; -fx-font-family: Candara; " +
+                        "-fx-background-radius: 5px; -fx-font-size: 24px; -fx-text-fill: #1f2333");
+                vBox.setAlignment(Pos.CENTER);
+                vBox.getChildren().add(button);
+                gridPane.add(vBox, i, j);
+                gen++;
+            }
         }
-        PokemonJson pokemon = mapper.readValue(jsonText, PokemonJson.class);
-        System.out.println("Pikachu is " + pokemon.getHeight() + " decimeters tall.");
     }
 
 }

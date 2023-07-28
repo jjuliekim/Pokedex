@@ -12,14 +12,14 @@ import java.util.Objects;
 public class Main extends Application {
     private static Main instance;
     private Stage mainStage;
+    private int generation;
 
     @Override
     public void start(Stage stage) {
         instance = this;
         mainStage = stage;
-        mainStage.setTitle("Pokedex");
+        mainStage.setTitle("Starter Pokedex");
         loadMenu();
-        mainStage.setMaximized(true);
         mainStage.show();
     }
 
@@ -46,10 +46,15 @@ public class Main extends Application {
     }
 
     public void loadMenu() {
+        loadFXML("menu");
+    }
+
+    public void loadGen(int gen) {
+        generation = gen;
         loadFXML("pokedex");
     }
 
-    public void loadGen1() {
-        loadFXML("gen1");
+    public int getGeneration() {
+        return generation;
     }
 }
