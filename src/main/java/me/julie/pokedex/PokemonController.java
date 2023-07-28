@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
@@ -47,8 +48,11 @@ public class PokemonController {
     @FXML
     private ImageView pokemonImage;
     @FXML
-    private GridPane gridPane;
-
+    private ChoiceBox<String> evolutionChoice;
+    @FXML
+    private Label weaknessLabel;
+    @FXML
+    private Label strengthLabel;
 
     @FXML
     public void initialize() throws IOException {
@@ -128,10 +132,27 @@ public class PokemonController {
         PokemonData pokemon = getPokemonData(pokemonList.get(index));
         pokemonImage.setImage(new Image(pokemon.getImage().toString()));
         nameLabel.setText(pokemonList.get(index));
-        heightLabel.setText("Height: " + pokemon.getHeight() * 10 + " cm / "
+        heightLabel.setText(pokemon.getHeight() * 10 + " cm / "
                 + Math.round(pokemon.getHeight() * 3.937) + " in");
-        weightLabel.setText("Weight: " + pokemon.getWeight() / 10 + " kg / "
+        weightLabel.setText(pokemon.getWeight() / 10 + " kg / "
                 + Math.round(pokemon.getWeight() / 4.536) + " lbs");
+        typeLabel.setText("[" + pokemon.getType() + "]");
+        if ((pokemon.getType()).contains("grass")) {
+            strengthLabel.setText("water, ground, rock");
+            weaknessLabel.setText("fire, ice, poison, flying, bug");
+        }
+        if ((pokemon.getType()).contains("fire")) {
+            strengthLabel.setText("grass, ice, bug, steel");
+            weaknessLabel.setText("water, ground, rock");
+        }
+        if ((pokemon.getType()).contains("water")) {
+            strengthLabel.setText("fire, ground, rock");
+            weaknessLabel.setText("grass, electric");
+        }
+        if ((pokemon.getType()).contains("poison")) {
+            strengthLabel.setText("water, ground, rock, fairy");
+            weaknessLabel.setText("fire, ice, flying, bug, ground, psychic");
+        }
     }
 
     private PokemonData getPokemonData(final String pokemon) throws IOException {
@@ -144,7 +165,6 @@ public class PokemonController {
         final JsonNode node = mapper.readTree(jsonText);
 
         final int height = node.get("height").asInt();
-
         final int weight = node.get("weight").asInt();
 
         final JsonNode spritesNode = node.get("sprites");
@@ -153,6 +173,13 @@ public class PokemonController {
         final URL frontDefaultURL = new URL(officialArtworkNode.get("front_default").asText());
         final URL frontShinyURL = new URL(officialArtworkNode.get("front_shiny").asText());
 
-        return new PokemonData(height, frontDefaultURL, frontShinyURL, weight);
+        final JsonNode typesNode = node.get("types");
+        final List<String> types = new ArrayList<>();
+        for (final JsonNode typeNode : typesNode) {
+            final JsonNode type = typeNode.get("type");
+            types.add(type.get("name").asText());
+        }
+
+        return new PokemonData(height, frontDefaultURL, frontShinyURL, weight, types);
     }
 }

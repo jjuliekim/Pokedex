@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Scene?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
@@ -33,12 +34,12 @@
             <children>
                <Label fx:id="nameLabel" text="name">
                   <font>
-                     <Font name="Candara Bold" size="50.0" />
+                     <Font name="Candara Bold" size="60.0" />
                   </font>
                </Label>
                <Label fx:id="typeLabel" text="type">
                   <font>
-                     <Font name="Candara Bold" size="24.0" />
+                     <Font name="Candara Italic" size="24.0" />
                   </font>
                </Label>
                <HBox alignment="CENTER" minWidth="900.0" prefHeight="340.0" prefWidth="900.0">
@@ -51,7 +52,7 @@
                            <Insets right="45.0" />
                         </HBox.margin>
                      </Button>
-                     <GridPane fx:id="gridPane" gridLinesVisible="true" hgap="20.0" prefHeight="330.0" prefWidth="700.0">
+                     <GridPane fx:id="gridPane" hgap="20.0" prefHeight="330.0" prefWidth="700.0">
                        <columnConstraints>
                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="300.0" />
                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="300.0" />
@@ -61,34 +62,93 @@
                          <RowConstraints minHeight="10.0" prefHeight="300.0" vgrow="SOMETIMES" />
                        </rowConstraints>
                         <children>
-                           <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <VBox prefHeight="200.0" prefWidth="100.0">
                               <children>
-                                 <Label fx:id="heightLabel" text="height">
+                                 <HBox>
+                                    <children>
+                                       <Label text="Height: " wrapText="true">
+                                          <font>
+                                             <Font name="Candara Bold" size="24.0" />
+                                          </font>
+                                       </Label>
+                                       <Label fx:id="heightLabel" text="10" wrapText="true">
+                                          <font>
+                                             <Font name="Candara" size="24.0" />
+                                          </font>
+                                       </Label>
+                                    </children>
+                                    <VBox.margin>
+                                       <Insets bottom="10.0" />
+                                    </VBox.margin>
+                                 </HBox>
+                                 <HBox>
+                                    <children>
+                                       <Label text="Weight: " wrapText="true">
+                                          <font>
+                                             <Font name="Candara Bold" size="24.0" />
+                                          </font>
+                                       </Label>
+                                       <Label fx:id="weightLabel" text="10" wrapText="true">
+                                          <font>
+                                             <Font name="Candara" size="24.0" />
+                                          </font>
+                                       </Label>
+                                    </children>
+                                    <VBox.margin>
+                                       <Insets bottom="20.0" />
+                                    </VBox.margin>
+                                 </HBox>
+                                 <Label text="Strengths: " wrapText="true">
                                     <font>
                                        <Font name="Candara Bold" size="24.0" />
                                     </font>
                                  </Label>
-                                 <Label fx:id="weightLabel" text="height">
+                                 <Label fx:id="strengthLabel" text="10" wrapText="true">
+                                    <font>
+                                       <Font name="Candara" size="24.0" />
+                                    </font>
+                                    <VBox.margin>
+                                       <Insets bottom="10.0" />
+                                    </VBox.margin>
+                                 </Label>
+                                 <Label text="Weaknesses:  " wrapText="true">
                                     <font>
                                        <Font name="Candara Bold" size="24.0" />
+                                    </font>
+                                 </Label>
+                                 <Label fx:id="weaknessLabel" text="10" wrapText="true">
+                                    <font>
+                                       <Font name="Candara" size="24.0" />
                                     </font>
                                  </Label>
                               </children>
                            </VBox>
                            <VBox alignment="TOP_CENTER" GridPane.columnIndex="1">
                               <children>
-                                 <ImageView fx:id="pokemonImage" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                 <ImageView fx:id="pokemonImage" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="NEVER" />
                                  <ToggleButton fx:id="toggleShiny" mnemonicParsing="false" text="shiny">
                                     <font>
                                        <Font name="Candara" size="12.0" />
                                     </font>
+                                    <VBox.margin>
+                                       <Insets top="7.0" />
+                                    </VBox.margin>
                                  </ToggleButton>
+                                 <Label text="evolutions">
+                                    <font>
+                                       <Font name="Candara Bold Italic" size="20.0" />
+                                    </font>
+                                    <VBox.margin>
+                                       <Insets top="15.0" />
+                                    </VBox.margin>
+                                 </Label>
+                                 <ChoiceBox fx:id="evolutionChoice" prefWidth="150.0" />
                               </children>
                            </VBox>
-                           <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" />
+                           <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="2" />
                         </children>
                         <HBox.margin>
-                           <Insets top="10.0" />
+                           <Insets top="30.0" />
                         </HBox.margin>
                      </GridPane>
                      <Button fx:id="nextPokemon" mnemonicParsing="false" prefHeight="80.0" text="&gt;">
@@ -107,7 +167,7 @@
             <children>
                <Button fx:id="backButton" mnemonicParsing="false" text="Back">
                   <font>
-                     <Font name="Candara" size="14.0" />
+                     <Font name="Candara Bold" size="14.0" />
                   </font>
                   <VBox.margin>
                      <Insets left="18.0" top="30.0" />
