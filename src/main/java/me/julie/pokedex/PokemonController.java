@@ -54,6 +54,7 @@ public class PokemonController {
     public void initialize() throws IOException {
         index = 0;
         pokemonList = new ArrayList<>();
+        buttons = new ArrayList<>();
         scanner = new Scanner(Objects.requireNonNull(PokemonController.class.getClassLoader()
                 .getResourceAsStream("funFacts.txt")));
         bgImage.fitWidthProperty().bind(mainVBox.widthProperty());
@@ -126,6 +127,8 @@ public class PokemonController {
     private void mapping() throws IOException {
         PokemonData pokemon = getPokemonData(pokemonList.get(index));
         pokemonImage.setImage(new Image(pokemon.getImage().toString()));
+        nameLabel.setText(pokemonList.get(index));
+        heightLabel.setText("Height: " + pokemon.getHeight() * 10 + " cm");
     }
 
     private PokemonData getPokemonData(final String pokemon) throws IOException {
