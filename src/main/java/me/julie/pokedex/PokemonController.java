@@ -11,18 +11,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class PokemonController {
     private List<String> pokemonList;
-    private List<String> images;
+    private List<Button> buttons;
     private int index;
     private Scanner scanner;
     @FXML
@@ -57,16 +54,17 @@ public class PokemonController {
     public void initialize() throws IOException {
         index = 0;
         pokemonList = new ArrayList<>();
-        images = new ArrayList<>();
         scanner = new Scanner(Objects.requireNonNull(PokemonController.class.getClassLoader()
                 .getResourceAsStream("funFacts.txt")));
         bgImage.fitWidthProperty().bind(mainVBox.widthProperty());
         bgImage.fitHeightProperty().bind(mainVBox.heightProperty());
-        backButton.setOnAction(e -> Main.getInstance().loadMenu());
-        backButton.setFocusTraversable(false);
         toggleShiny.setFocusTraversable(false);
-        nextPokemon.setFocusTraversable(false);
-        prevPokemon.setFocusTraversable(false);
+        buttons.addAll(Arrays.asList(prevPokemon, nextPokemon, backButton));
+        buttons.forEach(button -> {
+            button.setFocusTraversable(false);
+            button.onMouseEnteredProperty().set(e -> button.setStyle("-fx-background-color: #faf6f6;"));
+            button.onMouseExitedProperty().set(e -> button.setStyle(""));
+        });
         switch (Main.getInstance().getGeneration()) {
             case 1 -> pokemonList.addAll(Arrays.asList("Bulbasaur", "Charmander", "Squirtle"));
             case 2 -> pokemonList.addAll(Arrays.asList("Chikorita", "Cyndaquil", "Totodile"));
@@ -78,41 +76,12 @@ public class PokemonController {
             case 8 -> pokemonList.addAll(Arrays.asList("Grookey", "Scorbunny", "Sobble"));
             case 9 -> pokemonList.addAll(Arrays.asList("Sprigatito", "Fuecoco", "Quaxly"));
         }
-        for (String pokemon : pokemonList) {
-            images.add(pokemon + ".png");
-        }
-        nextPokemon.setOnAction(e -> {
-            try {
-                index++;
-                if (index == 3) {
-                    index = 0;
-                }
-                toggleShiny.setSelected(false);
-                mapping();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
-        prevPokemon.setOnAction(e -> {
-            try {
-                index--;
-                if (index == -1) {
-                    index = 2;
-                }
-                toggleShiny.setSelected(false);
-                mapping();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
-        prevPokemon.onMouseEnteredProperty()
-                .set(e -> prevPokemon.setStyle("-fx-background-color: #faf6f6;"));
-        prevPokemon.onMouseExitedProperty()
-                .set(e -> prevPokemon.setStyle(""));
-        nextPokemon.onMouseEnteredProperty().set(e -> nextPokemon.setStyle("-fx-background-color: #faf6f6;"));
-        nextPokemon.onMouseExitedProperty().set(e -> nextPokemon.setStyle(""));
-        backButton.onMouseEnteredProperty().set(e -> backButton.setStyle("-fx-background-color: #faf6f6;"));
-        backButton.onMouseExitedProperty().set(e -> backButton.setStyle(""));
+        setButtonActions();
+        mapping();
+    }
+
+    private void setButtonActions() {
+        backButton.setOnAction(e -> Main.getInstance().loadMenu());
         toggleShiny.setOnAction(e -> {
             if (toggleShiny.isSelected()) {
                 try {
@@ -128,16 +97,34 @@ public class PokemonController {
                 }
             }
         });
-        run();
-    }
-
-    private void run() throws IOException {
-        mapping();
+        nextPokemon.setOnAction(e -> {
+            index++;
+            if (index == 3) {
+                index = 0;
+            }
+            toggleShiny.setSelected(false);
+            try {
+                mapping();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        prevPokemon.setOnAction(e -> {
+            index--;
+            if (index == -1) {
+                index = 2;
+            }
+            toggleShiny.setSelected(false);
+            try {
+                mapping();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
     }
 
     private void mapping() throws IOException {
         PokemonData pokemon = getPokemonData(pokemonList.get(index));
-        System.out.println(pokemonList.get(index) + " is " + pokemon.getHeight() + " decimeters tall.");
         pokemonImage.setImage(new Image(pokemon.getImage().toString()));
     }
 
@@ -149,12 +136,15 @@ public class PokemonController {
             jsonText = new String(in.readAllBytes(), StandardCharsets.UTF_8);
         }
         final JsonNode node = mapper.readTree(jsonText);
+
         final int height = node.get("height").asInt();
+
         final JsonNode spritesNode = node.get("sprites");
         final JsonNode otherNode = spritesNode.get("other");
         final JsonNode officialArtworkNode = otherNode.get("official-artwork");
         final URL frontDefaultURL = new URL(officialArtworkNode.get("front_default").asText());
         final URL frontShinyURL = new URL(officialArtworkNode.get("front_shiny").asText());
+
         return new PokemonData(height, frontDefaultURL, frontShinyURL);
     }
 }
