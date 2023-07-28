@@ -19,9 +19,13 @@ public class PokedexController {
     private GridPane gridPane;
     @FXML
     private ImageView bgImage;
+    private String buttonStyle;
 
     @FXML
     public void initialize() {
+        buttonStyle = "-fx-font-family: Candara; " +
+        "-fx-background-radius: 5px; -fx-font-size: 24px; -fx-text-fill: #1f2333;" +
+                "-fx-effect: dropshadow(gaussian, rgba(209,56,56,0.5), 20, 0, 0, 0);";
         int gen = 1;
         bgImage.fitWidthProperty().bind(mainVBox.widthProperty());
         bgImage.fitHeightProperty().bind(mainVBox.heightProperty());
@@ -32,8 +36,11 @@ public class PokedexController {
                 button.setFocusTraversable(false);
                 int finalGen = gen;
                 button.setOnAction(e -> Main.getInstance().loadGen(finalGen));
-                button.setStyle("-fx-background-color: #c6caca; -fx-font-family: Candara; " +
-                        "-fx-background-radius: 5px; -fx-font-size: 24px; -fx-text-fill: #1f2333");
+                button.setStyle("-fx-background-color: #fbf2f2; "+ buttonStyle);
+                button.onMouseEnteredProperty()
+                        .set(e -> button.setStyle("-fx-background-color: #ffffff; " + buttonStyle));
+                button.onMouseExitedProperty()
+                        .set(e -> button.setStyle("-fx-background-color: #fbf6f6; " + buttonStyle));
                 vBox.setAlignment(Pos.CENTER);
                 vBox.getChildren().add(button);
                 gridPane.add(vBox, i, j);

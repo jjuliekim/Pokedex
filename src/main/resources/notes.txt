@@ -1,4 +1,4 @@
-gen 1 (kanto region): bulbasaur, charmander, squirtle, pikachu
+gen 1 (kanto region): bulbasaur, charmander, squirtle
 gen 2 (johto region): chikorita, cyndaquil, totodile
 gen 3 (hoenn region): treecko, torchic, mudkip
 gen 4 (sinnoh region): turtwig, chimchar, piplup

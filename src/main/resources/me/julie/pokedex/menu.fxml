@@ -18,7 +18,7 @@
       <children>
          <VBox prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-               <ImageView fx:id="bgImage" fitHeight="600.0" fitWidth="900.0" opacity="0.4" pickOnBounds="true" VBox.vgrow="ALWAYS">
+               <ImageView fx:id="bgImage" fitHeight="600.0" fitWidth="900.0" opacity="0.7" pickOnBounds="true" VBox.vgrow="ALWAYS">
                   <image>
                      <Image url="@../../../borderReszed.jpg" />
                   </image>
