@@ -68,6 +68,11 @@
                                        <Font name="Candara Bold" size="24.0" />
                                     </font>
                                  </Label>
+                                 <Label fx:id="weightLabel" text="height">
+                                    <font>
+                                       <Font name="Candara Bold" size="24.0" />
+                                    </font>
+                                 </Label>
                               </children>
                            </VBox>
                            <VBox alignment="TOP_CENTER" GridPane.columnIndex="1">

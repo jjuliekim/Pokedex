@@ -32,7 +32,7 @@ public class PokedexController {
         for (int i = 0; i < gridPane.getColumnCount(); i++) {
             for (int j = 0; j < gridPane.getRowCount(); j++) {
                 VBox vBox = new VBox();
-                Button button = new Button("Gen" + gen);
+                Button button = new Button("Gen " + gen);
                 button.setFocusTraversable(false);
                 int finalGen = gen;
                 button.setOnAction(e -> Main.getInstance().loadGen(finalGen));
@@ -43,7 +43,7 @@ public class PokedexController {
                         .set(e -> button.setStyle("-fx-background-color: #fbf6f6; " + buttonStyle));
                 vBox.setAlignment(Pos.CENTER);
                 vBox.getChildren().add(button);
-                gridPane.add(vBox, i, j);
+                gridPane.add(vBox, j, i);
                 gen++;
             }
         }

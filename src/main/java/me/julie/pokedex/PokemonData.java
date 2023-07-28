@@ -6,11 +6,13 @@ public class PokemonData {
     private int height;
     private URL image;
     private URL shiny;
+    private int weight;
 
-    public PokemonData(int height, URL image, URL shiny) {
+    public PokemonData(int height, URL image, URL shiny, int weight) {
         this.height = height;
         this.image = image;
         this.shiny = shiny;
+        this.weight = weight;
     }
 
     public int getHeight() {
@@ -23,5 +25,9 @@ public class PokemonData {
 
     public URL getShinyImage() {
         return shiny;
+    }
+
+    public int getWeight() {
+        return weight;
     }
 }

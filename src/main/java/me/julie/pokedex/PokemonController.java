@@ -128,7 +128,10 @@ public class PokemonController {
         PokemonData pokemon = getPokemonData(pokemonList.get(index));
         pokemonImage.setImage(new Image(pokemon.getImage().toString()));
         nameLabel.setText(pokemonList.get(index));
-        heightLabel.setText("Height: " + pokemon.getHeight() * 10 + " cm");
+        heightLabel.setText("Height: " + pokemon.getHeight() * 10 + " cm / "
+                + Math.round(pokemon.getHeight() * 3.937) + " in");
+        weightLabel.setText("Weight: " + pokemon.getWeight() / 10 + " kg / "
+                + Math.round(pokemon.getWeight() / 4.536) + " lbs");
     }
 
     private PokemonData getPokemonData(final String pokemon) throws IOException {
@@ -142,12 +145,14 @@ public class PokemonController {
 
         final int height = node.get("height").asInt();
 
+        final int weight = node.get("weight").asInt();
+
         final JsonNode spritesNode = node.get("sprites");
         final JsonNode otherNode = spritesNode.get("other");
         final JsonNode officialArtworkNode = otherNode.get("official-artwork");
         final URL frontDefaultURL = new URL(officialArtworkNode.get("front_default").asText());
         final URL frontShinyURL = new URL(officialArtworkNode.get("front_shiny").asText());
 
-        return new PokemonData(height, frontDefaultURL, frontShinyURL);
+        return new PokemonData(height, frontDefaultURL, frontShinyURL, weight);
     }
 }
