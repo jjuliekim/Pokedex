@@ -9,7 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -20,7 +19,6 @@ import java.util.*;
 
 public class PokemonController {
     private List<String> pokemonList;
-    private List<Button> buttons;
     private int index;
     private Scanner scanner;
     @FXML
@@ -53,12 +51,14 @@ public class PokemonController {
     private Label weaknessLabel;
     @FXML
     private Label strengthLabel;
+    @FXML
+    private Label region;
 
     @FXML
     public void initialize() throws IOException {
         index = 0;
         pokemonList = new ArrayList<>();
-        buttons = new ArrayList<>();
+        List<Button> buttons = new ArrayList<>();
         scanner = new Scanner(Objects.requireNonNull(PokemonController.class.getClassLoader()
                 .getResourceAsStream("funFacts.txt")));
         bgImage.fitWidthProperty().bind(mainVBox.widthProperty());
@@ -71,15 +71,42 @@ public class PokemonController {
             button.onMouseExitedProperty().set(e -> button.setStyle(""));
         });
         switch (Main.getInstance().getGeneration()) {
-            case 1 -> pokemonList.addAll(Arrays.asList("Bulbasaur", "Charmander", "Squirtle"));
-            case 2 -> pokemonList.addAll(Arrays.asList("Chikorita", "Cyndaquil", "Totodile"));
-            case 3 -> pokemonList.addAll(Arrays.asList("Treecko", "Torchic", "Mudkip"));
-            case 4 -> pokemonList.addAll(Arrays.asList("Turtwig", "Chimchar", "Piplup"));
-            case 5 -> pokemonList.addAll(Arrays.asList("Snivy", "Tepig", "Oshawott"));
-            case 6 -> pokemonList.addAll(Arrays.asList("Chespin", "Fennekin", "Froakie"));
-            case 7 -> pokemonList.addAll(Arrays.asList("Rowlet", "Litten", "Popplio"));
-            case 8 -> pokemonList.addAll(Arrays.asList("Grookey", "Scorbunny", "Sobble"));
-            case 9 -> pokemonList.addAll(Arrays.asList("Sprigatito", "Fuecoco", "Quaxly"));
+            case 1 -> {
+                pokemonList.addAll(Arrays.asList("Bulbasaur", "Charmander", "Squirtle"));
+                region.setText("Kanto");
+            }
+            case 2 -> {
+                pokemonList.addAll(Arrays.asList("Chikorita", "Cyndaquil", "Totodile"));
+                region.setText("Johto");
+            }
+            case 3 -> {
+                pokemonList.addAll(Arrays.asList("Treecko", "Torchic", "Mudkip"));
+                region.setText("Hoenn");
+            }
+            case 4 -> {
+                pokemonList.addAll(Arrays.asList("Turtwig", "Chimchar", "Piplup"));
+                region.setText("Sinnoh");
+            }
+            case 5 -> {
+                pokemonList.addAll(Arrays.asList("Snivy", "Tepig", "Oshawott"));
+                region.setText("Unova");
+            }
+            case 6 -> {
+                pokemonList.addAll(Arrays.asList("Chespin", "Fennekin", "Froakie"));
+                region.setText("Kalos");
+            }
+            case 7 -> {
+                pokemonList.addAll(Arrays.asList("Rowlet", "Litten", "Popplio"));
+                region.setText("Alola");
+            }
+            case 8 -> {
+                pokemonList.addAll(Arrays.asList("Grookey", "Scorbunny", "Sobble"));
+                region.setText("Galar");
+            }
+            case 9 -> {
+                pokemonList.addAll(Arrays.asList("Sprigatito", "Fuecoco", "Quaxly"));
+                region.setText("Paldea");
+            }
         }
         setButtonActions();
         mapping();
@@ -138,21 +165,23 @@ public class PokemonController {
                 + Math.round(pokemon.getWeight() / 4.536) + " lbs");
         typeLabel.setText("[" + pokemon.getType() + "]");
         if ((pokemon.getType()).contains("grass")) {
-            strengthLabel.setText("water, ground, rock");
-            weaknessLabel.setText("fire, ice, poison, flying, bug");
+            strengthLabel.setText("Water, ground, rock");
+            weaknessLabel.setText("Fire, ice, poison, flying, bug");
         }
         if ((pokemon.getType()).contains("fire")) {
-            strengthLabel.setText("grass, ice, bug, steel");
-            weaknessLabel.setText("water, ground, rock");
+            strengthLabel.setText("Grass, ice, bug, steel");
+            weaknessLabel.setText("Water, ground, rock");
         }
         if ((pokemon.getType()).contains("water")) {
-            strengthLabel.setText("fire, ground, rock");
-            weaknessLabel.setText("grass, electric");
+            strengthLabel.setText("Fire, ground, rock");
+            weaknessLabel.setText("Grass, electric");
         }
         if ((pokemon.getType()).contains("poison")) {
-            strengthLabel.setText("water, ground, rock, fairy");
-            weaknessLabel.setText("fire, ice, flying, bug, ground, psychic");
+            strengthLabel.setText("Water, ground, rock, fairy");
+            weaknessLabel.setText("Fire, ice, flying, bug, ground, psychic");
         }
+        //evolutionList = JsonNode ...?
+        //evolutionChoice.setItems(evolutionList);
     }
 
     private PokemonData getPokemonData(final String pokemon) throws IOException {
