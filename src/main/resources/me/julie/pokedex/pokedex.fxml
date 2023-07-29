@@ -68,12 +68,12 @@
                                     <children>
                                        <Label text="Height: " wrapText="true">
                                           <font>
-                                             <Font name="Candara Bold" size="24.0" />
+                                             <Font name="Candara Bold" size="20.0" />
                                           </font>
                                        </Label>
                                        <Label fx:id="heightLabel" text="10" wrapText="true">
                                           <font>
-                                             <Font name="Candara" size="24.0" />
+                                             <Font name="Candara" size="20.0" />
                                           </font>
                                        </Label>
                                     </children>
@@ -85,12 +85,12 @@
                                     <children>
                                        <Label text="Weight: " wrapText="true">
                                           <font>
-                                             <Font name="Candara Bold" size="24.0" />
+                                             <Font name="Candara Bold" size="20.0" />
                                           </font>
                                        </Label>
                                        <Label fx:id="weightLabel" text="10" wrapText="true">
                                           <font>
-                                             <Font name="Candara" size="24.0" />
+                                             <Font name="Candara" size="20.0" />
                                           </font>
                                        </Label>
                                     </children>
@@ -100,12 +100,12 @@
                                  </HBox>
                                  <Label text="Strengths: " wrapText="true">
                                     <font>
-                                       <Font name="Candara Bold" size="24.0" />
+                                       <Font name="Candara Bold" size="20.0" />
                                     </font>
                                  </Label>
                                  <Label fx:id="strengthLabel" text="10" wrapText="true">
                                     <font>
-                                       <Font name="Candara" size="24.0" />
+                                       <Font name="Candara" size="20.0" />
                                     </font>
                                     <VBox.margin>
                                        <Insets bottom="10.0" />
@@ -113,12 +113,12 @@
                                  </Label>
                                  <Label text="Weaknesses:  " wrapText="true">
                                     <font>
-                                       <Font name="Candara Bold" size="24.0" />
+                                       <Font name="Candara Bold" size="20.0" />
                                     </font>
                                  </Label>
                                  <Label fx:id="weaknessLabel" text="10" wrapText="true">
                                     <font>
-                                       <Font name="Candara" size="24.0" />
+                                       <Font name="Candara" size="20.0" />
                                     </font>
                                  </Label>
                               </children>
@@ -142,7 +142,7 @@
                                        <Insets top="15.0" />
                                     </VBox.margin>
                                  </Label>
-                                 <ChoiceBox fx:id="evolutionChoice" prefWidth="150.0" />
+                                 <ChoiceBox fx:id="evolutionChoice" prefWidth="100.0" />
                               </children>
                            </VBox>
                            <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="2">
@@ -151,12 +151,12 @@
                                     <children>
                                        <Label text="Region: " wrapText="true">
                                           <font>
-                                             <Font name="Candara Bold" size="24.0" />
+                                             <Font name="Candara Bold" size="20.0" />
                                           </font>
                                        </Label>
                                        <Label fx:id="region" text="10" wrapText="true">
                                           <font>
-                                             <Font name="Candara" size="24.0" />
+                                             <Font name="Candara" size="20.0" />
                                           </font>
                                        </Label>
                                     </children>

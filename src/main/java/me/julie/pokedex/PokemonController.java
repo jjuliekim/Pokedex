@@ -21,6 +21,8 @@ public class PokemonController {
     private List<String> pokemonList;
     private int index;
     private Scanner scanner;
+    private boolean first;
+    private String currentPokemon;
     @FXML
     private VBox mainVBox;
     @FXML
@@ -57,6 +59,7 @@ public class PokemonController {
     @FXML
     public void initialize() throws IOException {
         index = 0;
+        first = true;
         pokemonList = new ArrayList<>();
         List<Button> buttons = new ArrayList<>();
         scanner = new Scanner(Objects.requireNonNull(PokemonController.class.getClassLoader()
@@ -109,21 +112,25 @@ public class PokemonController {
             }
         }
         setButtonActions();
+        currentPokemon = pokemonList.get(0);
         mapping();
     }
 
     private void setButtonActions() {
-        backButton.setOnAction(e -> Main.getInstance().loadMenu());
+        backButton.setOnAction(e -> {
+            Main.getInstance().loadMenu();
+            first = true;
+        });
         toggleShiny.setOnAction(e -> {
             if (toggleShiny.isSelected()) {
                 try {
-                    pokemonImage.setImage(new Image(getPokemonData(pokemonList.get(index)).getShinyImage().toString()));
+                    pokemonImage.setImage(new Image(getPokemonData(currentPokemon).getShinyImage().toString()));
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
             } else {
                 try {
-                    pokemonImage.setImage(new Image(getPokemonData(pokemonList.get(index)).getImage().toString()));
+                    pokemonImage.setImage(new Image(getPokemonData(currentPokemon).getImage().toString()));
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -131,10 +138,12 @@ public class PokemonController {
         });
         nextPokemon.setOnAction(e -> {
             index++;
+            first = true;
             if (index == 3) {
                 index = 0;
             }
             toggleShiny.setSelected(false);
+            currentPokemon = pokemonList.get(index);
             try {
                 mapping();
             } catch (IOException ex) {
@@ -143,10 +152,20 @@ public class PokemonController {
         });
         prevPokemon.setOnAction(e -> {
             index--;
+            first = true;
             if (index == -1) {
                 index = 2;
             }
             toggleShiny.setSelected(false);
+            currentPokemon = pokemonList.get(index);
+            try {
+                mapping();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        evolutionChoice.setOnAction(e -> {
+            currentPokemon = evolutionChoice.getValue();
             try {
                 mapping();
             } catch (IOException ex) {
@@ -156,7 +175,7 @@ public class PokemonController {
     }
 
     private void mapping() throws IOException {
-        PokemonData pokemon = getPokemonData(pokemonList.get(index));
+        PokemonData pokemon = getPokemonData(currentPokemon);
         pokemonImage.setImage(new Image(pokemon.getImage().toString()));
         nameLabel.setText(pokemonList.get(index));
         heightLabel.setText(pokemon.getHeight() * 10 + " cm / "
@@ -180,8 +199,6 @@ public class PokemonController {
             strengthLabel.setText("Water, ground, rock, fairy");
             weaknessLabel.setText("Fire, ice, flying, bug, ground, psychic");
         }
-        //evolutionList = JsonNode ...?
-        //evolutionChoice.setItems(evolutionList);
     }
 
     private PokemonData getPokemonData(final String pokemon) throws IOException {
@@ -207,6 +224,26 @@ public class PokemonController {
         for (final JsonNode typeNode : typesNode) {
             final JsonNode type = typeNode.get("type");
             types.add(type.get("name").asText());
+        }
+
+        if (first) {
+            evolutionChoice.getItems().clear();
+            final URL evolURL = new URL("https://pokeapi.co/api/v2/"
+                    + "evolution-chain/" + node.get("id").asText());
+            final String jsonEvolText;
+            try (final InputStream in = evolURL.openStream()) {
+                jsonEvolText = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+            }
+            final JsonNode evolNode = mapper.readTree(jsonEvolText);
+            final JsonNode chainNode = evolNode.get("chain");
+            final String firstEvolution = chainNode.get("species").get("name").asText();
+            final String secondEvolution = chainNode.get("evolves_to").get(0).get("species").get("name").asText();
+            final String thirdEvolution = chainNode.get("evolves_to")
+                    .get(0).get("evolves_to").get(0).get("species").get("name").asText();
+            evolutionChoice.getItems().add(firstEvolution);
+            evolutionChoice.getItems().add(secondEvolution);
+            evolutionChoice.getItems().add(thirdEvolution);
+            first = false;
         }
 
         return new PokemonData(height, frontDefaultURL, frontShinyURL, weight, types);
