@@ -166,6 +166,9 @@ public class PokemonController {
         });
         evolutionChoice.setOnAction(e -> {
             currentPokemon = evolutionChoice.getValue();
+            if (currentPokemon == null) {
+                currentPokemon = pokemonList.get(index);
+            }
             try {
                 mapping();
             } catch (IOException ex) {
@@ -209,6 +212,7 @@ public class PokemonController {
             jsonText = new String(in.readAllBytes(), StandardCharsets.UTF_8);
         }
         final JsonNode node = mapper.readTree(jsonText);
+        System.out.println(node.get("id"));
 
         final int height = node.get("height").asInt();
         final int weight = node.get("weight").asInt();
@@ -228,8 +232,14 @@ public class PokemonController {
 
         if (first) {
             evolutionChoice.getItems().clear();
-            final URL evolURL = new URL("https://pokeapi.co/api/v2/"
-                    + "evolution-chain/" + node.get("id").asText());
+            final URL speciesURL = new URL(node.get("species").get("url").asText());
+            final String jsonSpeciesText;
+            try (final InputStream in = speciesURL.openStream()) {
+                jsonSpeciesText = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+            }
+            final JsonNode speciesNode = mapper.readTree(jsonSpeciesText);
+            final URL evolURL = new URL(speciesNode.get("evolution_chain").get("url").asText());
+            System.out.println(evolURL);
             final String jsonEvolText;
             try (final InputStream in = evolURL.openStream()) {
                 jsonEvolText = new String(in.readAllBytes(), StandardCharsets.UTF_8);
