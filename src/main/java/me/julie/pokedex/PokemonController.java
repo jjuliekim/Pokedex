@@ -74,42 +74,15 @@ public class PokemonController {
             button.onMouseExitedProperty().set(e -> button.setStyle(""));
         });
         switch (Main.getInstance().getGeneration()) {
-            case 1 -> {
-                pokemonList.addAll(Arrays.asList("Bulbasaur", "Charmander", "Squirtle"));
-                region.setText("Kanto");
-            }
-            case 2 -> {
-                pokemonList.addAll(Arrays.asList("Chikorita", "Cyndaquil", "Totodile"));
-                region.setText("Johto");
-            }
-            case 3 -> {
-                pokemonList.addAll(Arrays.asList("Treecko", "Torchic", "Mudkip"));
-                region.setText("Hoenn");
-            }
-            case 4 -> {
-                pokemonList.addAll(Arrays.asList("Turtwig", "Chimchar", "Piplup"));
-                region.setText("Sinnoh");
-            }
-            case 5 -> {
-                pokemonList.addAll(Arrays.asList("Snivy", "Tepig", "Oshawott"));
-                region.setText("Unova");
-            }
-            case 6 -> {
-                pokemonList.addAll(Arrays.asList("Chespin", "Fennekin", "Froakie"));
-                region.setText("Kalos");
-            }
-            case 7 -> {
-                pokemonList.addAll(Arrays.asList("Rowlet", "Litten", "Popplio"));
-                region.setText("Alola");
-            }
-            case 8 -> {
-                pokemonList.addAll(Arrays.asList("Grookey", "Scorbunny", "Sobble"));
-                region.setText("Galar");
-            }
-            case 9 -> {
-                pokemonList.addAll(Arrays.asList("Sprigatito", "Fuecoco", "Quaxly"));
-                region.setText("Paldea");
-            }
+            case 1 -> pokemonList.addAll(Arrays.asList("Bulbasaur", "Charmander", "Squirtle"));
+            case 2 -> pokemonList.addAll(Arrays.asList("Chikorita", "Cyndaquil", "Totodile"));
+            case 3 -> pokemonList.addAll(Arrays.asList("Treecko", "Torchic", "Mudkip"));
+            case 4 -> pokemonList.addAll(Arrays.asList("Turtwig", "Chimchar", "Piplup"));
+            case 5 -> pokemonList.addAll(Arrays.asList("Snivy", "Tepig", "Oshawott"));
+            case 6 -> pokemonList.addAll(Arrays.asList("Chespin", "Fennekin", "Froakie"));
+            case 7 -> pokemonList.addAll(Arrays.asList("Rowlet", "Litten", "Popplio"));
+            case 8 -> pokemonList.addAll(Arrays.asList("Grookey", "Scorbunny", "Sobble"));
+            case 9 -> pokemonList.addAll(Arrays.asList("Sprigatito", "Fuecoco", "Quaxly"));
         }
         setButtonActions();
         currentPokemon = pokemonList.get(0);
@@ -186,22 +159,8 @@ public class PokemonController {
         weightLabel.setText(pokemon.getWeight() / 10 + " kg / "
                 + Math.round(pokemon.getWeight() / 4.536) + " lbs");
         typeLabel.setText("[" + pokemon.getType() + "]");
-        if ((pokemon.getType()).contains("grass")) {
-            strengthLabel.setText("Water, ground, rock");
-            weaknessLabel.setText("Fire, ice, poison, flying, bug");
-        }
-        if ((pokemon.getType()).contains("fire")) {
-            strengthLabel.setText("Grass, ice, bug, steel");
-            weaknessLabel.setText("Water, ground, rock");
-        }
-        if ((pokemon.getType()).contains("water")) {
-            strengthLabel.setText("Fire, ground, rock");
-            weaknessLabel.setText("Grass, electric");
-        }
-        if ((pokemon.getType()).contains("poison")) {
-            strengthLabel.setText("Water, ground, rock, fairy");
-            weaknessLabel.setText("Fire, ice, flying, bug, ground, psychic");
-        }
+        // strength/weakness
+        region.setText(pokemon.getRegion());
     }
 
     private PokemonData getPokemonData(final String pokemon) throws IOException {
@@ -212,7 +171,6 @@ public class PokemonController {
             jsonText = new String(in.readAllBytes(), StandardCharsets.UTF_8);
         }
         final JsonNode node = mapper.readTree(jsonText);
-        System.out.println(node.get("id"));
 
         final int height = node.get("height").asInt();
         final int weight = node.get("weight").asInt();
@@ -230,6 +188,8 @@ public class PokemonController {
             types.add(type.get("name").asText());
         }
 
+        // strengths/weaknesses
+
         if (first) {
             evolutionChoice.getItems().clear();
             final URL speciesURL = new URL(node.get("species").get("url").asText());
@@ -239,7 +199,6 @@ public class PokemonController {
             }
             final JsonNode speciesNode = mapper.readTree(jsonSpeciesText);
             final URL evolURL = new URL(speciesNode.get("evolution_chain").get("url").asText());
-            System.out.println(evolURL);
             final String jsonEvolText;
             try (final InputStream in = evolURL.openStream()) {
                 jsonEvolText = new String(in.readAllBytes(), StandardCharsets.UTF_8);
@@ -256,6 +215,14 @@ public class PokemonController {
             first = false;
         }
 
-        return new PokemonData(height, frontDefaultURL, frontShinyURL, weight, types);
+        final URL genURL = new URL("https://pokeapi.co/api/v2/generation/" + Main.getInstance().getGeneration());
+        final String jsonGenText;
+        try (final InputStream in = genURL.openStream()) {
+            jsonGenText = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+        }
+        final JsonNode generationNode = mapper.readTree(jsonGenText);
+        final JsonNode mainRegionNode = generationNode.get("main_region");
+        String pokemonRegion = mainRegionNode.get("name").asText();
+        return new PokemonData(height, frontDefaultURL, frontShinyURL, weight, types, pokemonRegion);
     }
 }

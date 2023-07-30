@@ -9,13 +9,15 @@ public class PokemonData {
     private URL shiny;
     private int weight;
     private List<String> types;
+    private String region;
 
-    public PokemonData(int height, URL image, URL shiny, int weight, List<String> type) {
+    public PokemonData(int height, URL image, URL shiny, int weight, List<String> type, String region) {
         this.height = height;
         this.image = image;
         this.shiny = shiny;
         this.weight = weight;
         this.types = type;
+        this.region = region;
     }
 
     public int getHeight() {
@@ -44,5 +46,9 @@ public class PokemonData {
             }
         }
         return typeLabel.toString();
+    }
+
+    public String getRegion() {
+        return region;
     }
 }
