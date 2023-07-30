@@ -159,12 +159,14 @@ public class PokemonController {
         weightLabel.setText(pokemon.getWeight() / 10 + " kg / "
                 + Math.round(pokemon.getWeight() / 4.536) + " lbs");
         typeLabel.setText("[" + pokemon.getType() + "]");
-        // strength/weakness
+        strengthLabel.setText(pokemon.getStrengths());
+        weaknessLabel.setText(pokemon.getWeaknesses());
         region.setText(pokemon.getRegion());
     }
 
     private PokemonData getPokemonData(final String pokemon) throws IOException {
         final ObjectMapper mapper = new ObjectMapper();
+
         final URL url = new URL("https://pokeapi.co/api/v2/pokemon/" + pokemon.toLowerCase());
         final String jsonText;
         try (final InputStream in = url.openStream()) {
@@ -183,12 +185,28 @@ public class PokemonController {
 
         final JsonNode typesNode = node.get("types");
         final List<String> types = new ArrayList<>();
+        final List<String> strengths = new ArrayList<>();
+        final List<String> weaknesses = new ArrayList<>();
         for (final JsonNode typeNode : typesNode) {
             final JsonNode type = typeNode.get("type");
             types.add(type.get("name").asText());
-        }
 
-        // strengths/weaknesses
+            final URL typeURL = new URL(type.get("url").asText());
+            final String jsonTypeText;
+            try (final InputStream in = typeURL.openStream()) {
+                jsonTypeText = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+            }
+            final JsonNode typeURLNode = mapper.readTree(jsonTypeText);
+            final JsonNode damageRelationsNode = typeURLNode.get("damage_relations");
+            final JsonNode doubleDamageFromNode = damageRelationsNode.get("double_damage_from");
+            for (final JsonNode doubleDamageFrom : doubleDamageFromNode) {
+                weaknesses.add(doubleDamageFrom.get("name").asText());
+            }
+            final JsonNode doubleDamageToNode = damageRelationsNode.get("double_damage_to");
+            for (final JsonNode doubleDamageTo : doubleDamageToNode) {
+                strengths.add(doubleDamageTo.get("name").asText());
+            }
+        }
 
         if (first) {
             evolutionChoice.getItems().clear();
@@ -223,6 +241,7 @@ public class PokemonController {
         final JsonNode generationNode = mapper.readTree(jsonGenText);
         final JsonNode mainRegionNode = generationNode.get("main_region");
         String pokemonRegion = mainRegionNode.get("name").asText();
-        return new PokemonData(height, frontDefaultURL, frontShinyURL, weight, types, pokemonRegion);
+        return new PokemonData(height, frontDefaultURL, frontShinyURL, weight,
+                types, pokemonRegion, strengths, weaknesses);
     }
 }

@@ -1,7 +1,10 @@
 package me.julie.pokedex;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PokemonData {
     private int height;
@@ -10,14 +13,19 @@ public class PokemonData {
     private int weight;
     private List<String> types;
     private String region;
+    private List<String> strengths;
+    private List<String> weaknesses;
 
-    public PokemonData(int height, URL image, URL shiny, int weight, List<String> type, String region) {
+    public PokemonData(int height, URL image, URL shiny, int weight,
+                       List<String> type, String region, List<String> strengths, List<String> weaknesses) {
         this.height = height;
         this.image = image;
         this.shiny = shiny;
         this.weight = weight;
         this.types = type;
         this.region = region;
+        this.strengths = strengths;
+        this.weaknesses = weaknesses;
     }
 
     public int getHeight() {
@@ -37,18 +45,34 @@ public class PokemonData {
     }
 
     public String getType() {
-        StringBuilder typeLabel = new StringBuilder();
-        for (int i = 0; i < types.size(); i++) {
-            if (i < types.size() - 1) {
-                typeLabel.append(types.get(i)).append(", ");
-            } else {
-                typeLabel.append(types.get(i));
-            }
-        }
-        return typeLabel.toString();
+        return listToLabel(types);
     }
 
     public String getRegion() {
         return region;
+    }
+
+    public String getStrengths() {
+        return listToLabel(strengths);
+    }
+
+    public String getWeaknesses() {
+        return listToLabel(weaknesses);
+    }
+
+    public String listToLabel(List<String> list) {
+        Set<String> seen = new HashSet<>();
+        StringBuilder label = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            if (!seen.add(list.get(i))) {
+                continue;
+            }
+            if (i != 0) {
+                label.append(", ").append(list.get(i));
+            } else {
+                label.append(list.get(i));
+            }
+        }
+        return label.toString();
     }
 }
