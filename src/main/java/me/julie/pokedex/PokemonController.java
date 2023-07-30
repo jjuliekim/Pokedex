@@ -23,6 +23,7 @@ public class PokemonController {
     private Scanner scanner;
     private boolean first;
     private String currentPokemon;
+    private boolean isModifyingEvolutionChoices;
     @FXML
     private VBox mainVBox;
     @FXML
@@ -61,13 +62,10 @@ public class PokemonController {
         index = 0;
         first = true;
         pokemonList = new ArrayList<>();
-        List<Button> buttons = new ArrayList<>();
-        scanner = new Scanner(Objects.requireNonNull(PokemonController.class.getClassLoader()
-                .getResourceAsStream("funFacts.txt")));
         bgImage.fitWidthProperty().bind(mainVBox.widthProperty());
         bgImage.fitHeightProperty().bind(mainVBox.heightProperty());
         toggleShiny.setFocusTraversable(false);
-        buttons.addAll(Arrays.asList(prevPokemon, nextPokemon, backButton));
+        List<Button> buttons = new ArrayList<>(Arrays.asList(prevPokemon, nextPokemon, backButton));
         buttons.forEach(button -> {
             button.setFocusTraversable(false);
             button.onMouseEnteredProperty().set(e -> button.setStyle("-fx-background-color: #faf6f6;"));
@@ -93,6 +91,7 @@ public class PokemonController {
         backButton.setOnAction(e -> {
             Main.getInstance().loadMenu();
             first = true;
+            toggleShiny.setSelected(false);
         });
         toggleShiny.setOnAction(e -> {
             if (toggleShiny.isSelected()) {
@@ -138,14 +137,14 @@ public class PokemonController {
             }
         });
         evolutionChoice.setOnAction(e -> {
+            toggleShiny.setSelected(false);
             currentPokemon = evolutionChoice.getValue();
-            if (currentPokemon == null) {
-                currentPokemon = pokemonList.get(index);
-            }
-            try {
-                mapping();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
+            if (!isModifyingEvolutionChoices) {
+                try {
+                    mapping();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
     }
@@ -162,6 +161,7 @@ public class PokemonController {
         strengthLabel.setText(pokemon.getStrengths());
         weaknessLabel.setText(pokemon.getWeaknesses());
         region.setText(pokemon.getRegion());
+        funFactLabel.setText(getFunFact());
     }
 
     private PokemonData getPokemonData(final String pokemon) throws IOException {
@@ -209,6 +209,7 @@ public class PokemonController {
         }
 
         if (first) {
+            isModifyingEvolutionChoices = true;
             evolutionChoice.getItems().clear();
             final URL speciesURL = new URL(node.get("species").get("url").asText());
             final String jsonSpeciesText;
@@ -230,7 +231,9 @@ public class PokemonController {
             evolutionChoice.getItems().add(firstEvolution);
             evolutionChoice.getItems().add(secondEvolution);
             evolutionChoice.getItems().add(thirdEvolution);
+            evolutionChoice.setValue(firstEvolution);
             first = false;
+            isModifyingEvolutionChoices = false;
         }
 
         final URL genURL = new URL("https://pokeapi.co/api/v2/generation/" + Main.getInstance().getGeneration());
@@ -243,5 +246,22 @@ public class PokemonController {
         String pokemonRegion = mainRegionNode.get("name").asText();
         return new PokemonData(height, frontDefaultURL, frontShinyURL, weight,
                 types, pokemonRegion, strengths, weaknesses);
+    }
+
+    private String getFunFact() {
+        try (Scanner scanner = new Scanner(Objects.requireNonNull(PokemonController.class.getClassLoader()
+                .getResourceAsStream("funFacts.txt")))) {
+            // (generation - 1) * 9 + (index * 3) + evolution = 13
+            final int generation = Main.getInstance().getGeneration();
+            final int index = this.index + 1;
+            final int evolution = evolutionChoice.getItems().indexOf(evolutionChoice.getValue()) + 1;
+            int line = ((generation - 1) * 9) + ((index - 1) * 3) + evolution;
+            System.out.printf("generation: %s, index: %s, evolution: %s, line: %s\n", generation, index, evolution, line);
+            String str = "";
+            for (int i = 0; i < line; i++) {
+                str = scanner.nextLine();
+            }
+            return str;
+        }
     }
 }

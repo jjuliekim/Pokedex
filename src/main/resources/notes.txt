@@ -7,3 +7,15 @@ gen 6 (kalos region): chespin, fennekin, froakie
 gen 7 (alola region): rowlet, litten, popplio
 gen 8 (galar region): grookey, scorbunny, sobble
 gen 9 (paldea region): sprigatito, fuecoco, quaxly
+
+1           2      3
+bulbasaur ivysaur venusaur
+4           5          6
+charmander charmeleon charizard
+7          8         9
+squirtle wartortle blastoise
+
+10         11        12
+chikorita bayleef meganium
+13         14         15
+cyndaquil quilava typhlosion

@@ -1,0 +1,15 @@
+bulbasaur
+ivysaur
+venusaur
+charmander
+charmeleon
+charizard
+squirtle
+wartortle
+blastoise
+chikorita
+bayleef
+meganium
+cyndaquil
+quilava
+typhlosion
