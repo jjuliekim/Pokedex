@@ -3,10 +3,7 @@ package me.julie.pokedex;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -20,7 +17,6 @@ import java.util.*;
 public class PokemonController {
     private List<String> pokemonList;
     private int index;
-    private Scanner scanner;
     private boolean first;
     private String currentPokemon;
     private boolean isModifyingEvolutionChoices;
@@ -64,11 +60,12 @@ public class PokemonController {
         pokemonList = new ArrayList<>();
         bgImage.fitWidthProperty().bind(mainVBox.widthProperty());
         bgImage.fitHeightProperty().bind(mainVBox.heightProperty());
-        toggleShiny.setFocusTraversable(false);
-        List<Button> buttons = new ArrayList<>(Arrays.asList(prevPokemon, nextPokemon, backButton));
+        List<Control> buttons = new ArrayList<>(
+                Arrays.asList(prevPokemon, nextPokemon, backButton, toggleShiny, evolutionChoice));
         buttons.forEach(button -> {
             button.setFocusTraversable(false);
-            button.onMouseEnteredProperty().set(e -> button.setStyle("-fx-background-color: #faf6f6;"));
+            button.onMouseEnteredProperty().set(e ->
+                    button.setStyle("-fx-effect: dropshadow(gaussian, rgba(151,4,4,0.5), 20, 0, 0, 0);"));
             button.onMouseExitedProperty().set(e -> button.setStyle(""));
         });
         switch (Main.getInstance().getGeneration()) {
@@ -84,7 +81,7 @@ public class PokemonController {
         }
         setButtonActions();
         currentPokemon = pokemonList.get(0);
-        mapping();
+        displayInfo();
     }
 
     private void setButtonActions() {
@@ -117,7 +114,7 @@ public class PokemonController {
             toggleShiny.setSelected(false);
             currentPokemon = pokemonList.get(index);
             try {
-                mapping();
+                displayInfo();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -131,7 +128,7 @@ public class PokemonController {
             toggleShiny.setSelected(false);
             currentPokemon = pokemonList.get(index);
             try {
-                mapping();
+                displayInfo();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -141,7 +138,7 @@ public class PokemonController {
             currentPokemon = evolutionChoice.getValue();
             if (!isModifyingEvolutionChoices) {
                 try {
-                    mapping();
+                    displayInfo();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -149,7 +146,7 @@ public class PokemonController {
         });
     }
 
-    private void mapping() throws IOException {
+    private void displayInfo() throws IOException {
         PokemonData pokemon = getPokemonData(currentPokemon);
         pokemonImage.setImage(new Image(pokemon.getImage().toString()));
         nameLabel.setText(pokemonList.get(index));
@@ -251,12 +248,10 @@ public class PokemonController {
     private String getFunFact() {
         try (Scanner scanner = new Scanner(Objects.requireNonNull(PokemonController.class.getClassLoader()
                 .getResourceAsStream("funFacts.txt")))) {
-            // (generation - 1) * 9 + (index * 3) + evolution = 13
             final int generation = Main.getInstance().getGeneration();
             final int index = this.index + 1;
             final int evolution = evolutionChoice.getItems().indexOf(evolutionChoice.getValue()) + 1;
             int line = ((generation - 1) * 9) + ((index - 1) * 3) + evolution;
-            System.out.printf("generation: %s, index: %s, evolution: %s, line: %s\n", generation, index, evolution, line);
             String str = "";
             for (int i = 0; i < line; i++) {
                 str = scanner.nextLine();
